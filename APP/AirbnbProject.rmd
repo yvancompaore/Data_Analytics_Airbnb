@@ -1,0 +1,76 @@
+---
+title: "Airbnb Project Presentation"
+author: "Yvan COMPAORE - Aya LAMKADEM - Assia KABZOI - Sofiane RAHLI"
+date: "25/11/2020"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## PREPROCESSING DATA
+
+```{r, echo=FALSE}
+   knitr::include_graphics('./www/1.png')
+```
+
+## CLEANSED DATA
+
+```{r, echo=FALSE}
+   knitr::include_graphics('./www/2.png')
+```
+
+
+## READ DATA
+
+```{r, echo=FALSE}
+   knitr::include_graphics('./www/2.3.png')
+```
+
+## Architecture of the App 
+### Introduction
+
+```{r, echo=FALSE}
+   knitr::include_graphics('./www/3.png')
+```
+
+## Architecture of the App
+### Analysis 1 
+
+```{r, echo=FALSE}
+   knitr::include_graphics('./www/4.png')
+```
+
+## Architecture of the App
+### Analysis 1 (More features)
+```{r, echo=FALSE}
+   knitr::include_graphics('./www/5.png')
+```
+
+## Architecture of the App
+### Analysis 2 (Map)
+
+```{r, echo=FALSE}
+   knitr::include_graphics('./www/6.png')
+```
+
+## Architecture of the App
+### Data page
+
+```{r, echo=FALSE}
+   knitr::include_graphics('./www/7.png')
+```
+
+
+## Architecture of the App
+### Abous us
+
+```{r, echo=FALSE}
+   knitr::include_graphics('./www/8.png')
+```
+
+
+
+

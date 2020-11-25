@@ -1,0 +1,36 @@
+#read csv
+read_data <- function(city){
+  
+  file_url <- file.path("data_cleansed", city)
+  file_names <- list.files(file_url)
+  files_paths <- c()
+  
+  for(i in 1:length(file_names)){
+    date <- file_names[i]
+    file_dir <- file.path("data_cleansed", city,date)
+    file_subdirs <- list.dirs(file_dir)
+    print(file_subdirs)
+    files_paths <- c(files_paths, file_subdirs)
+    
+    #date <- file_names[i]
+    #print("-------------------------------------------------")
+    #print(paste(c("Preparing data for", city, "compiled at", date, "row", nrow(listings)), collapse = " "))
+    #listings_url <- file.path("data_cleansed", city, date, "listings.csv")
+    #files_sub <- c(listings_url,)
+    #files_paths <- c(listings_url,)
+    #listings <- read.csv(gzfile(listings_url))
+    #if(i > 0){
+    #listings_final=rbind(listings,listings)
+    #}
+  }
+  
+  print(files_paths)
+  files_paths <- file.path(files_paths, "listings.csv")
+  listings <- 
+    do.call(rbind,
+            lapply(files_paths, read.csv, row.names=1))
+  #listings_url <- file.path("data_cleansed", country, "2020-07-17", "listings.csv")
+  #listings <- read.csv(gzfile(listings_url))
+}
+
+data <- read_data("barcelona")

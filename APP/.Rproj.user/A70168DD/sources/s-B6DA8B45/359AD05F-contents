@@ -1,0 +1,279 @@
+---
+title: "Airbnb Project Part I"
+author: " Yvan Compaore (Gr2) | Assia Kabzoi(Gr1) | Aya Lamkadem (Gr1) | Sofiane Rahli (Gr2)"
+date: "8 november 2020"
+output: html_notebook
+---
+
+
+```{r, echo=FALSE, message = FALSE, warning = FALSE}
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(data.table)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+```{r, echo=FALSE, message = FALSE, warning = FALSE}
+listings
+```
+
+
+## Analysis 1: Comparing Cities
+Comparing Airbnb listings in the three different cities:  
+
+
+#### • Find the "average availability over 30 days" of listings per each city.
+
+```{r, echo=FALSE}
+listings %>%
+  group_by(city) %>%
+    summarise(avg_30d_availability = mean(availability_30, na.rm=TRUE))
+```
+
+
+#### • Find the "average revenue of over 30 days" of listings per each city.
+
+```{r, echo=FALSE}
+listings %>%
+  group_by(city) %>%
+    summarise(avg_30d_revenue = mean(revenue_30, na.rm=TRUE))
+
+```
+
+
+#### • Compare the distribution of estimated availability for the next 30 days of listings per each city.
+
+```{r, echo=FALSE}
+g<- ggplot(listings, aes(city, availability_30))
+g + geom_boxplot() + ggtitle("Distribution of estimated availability for the next 30 days")
+```
+
+
+#### • Compare the distribution of estimated revenue for the next 30 days of listings per each city.
+
+```{r, echo=FALSE}
+g <- ggplot(listings, aes(x=city, y=revenue_30))+ scale_y_continuous(limits = quantile(listings$revenue_30, c(0.1, 0.9), na.rm = TRUE))+ geom_boxplot(alpha = 0.5, color = "blue")
+g +  ggtitle("Distribution of estimated revenue for the next 30 days")
+```
+
+
+#### • Compare the distribution of estimated revenue for the next 30 days of listings per each city & for each house size (# of bedrooms).
+
+```{r, echo=FALSE}
+g <- ggplot(listings %>% filter(!is.na(bedrooms)), aes(city, revenue_30))
+g + geom_boxplot(aes(colour = bedrooms), na.rm = TRUE) + scale_y_continuous(limits = quantile(listings$revenue_30, c(0, 0.9), na.rm = TRUE)) + ggtitle("Distrib of estimated revenue for the next 30 days of listings per each city & house size ")
+```
+
+
+#### • Compare the distribution of estimated revenue for the next 30 days of listings per each city & for each room type (room_type).
+
+```{r, echo=FALSE}
+g <- ggplot(listings %>% filter(!is.na(room_type)), aes(city, revenue_30))
+g + geom_boxplot(aes(colour = room_type), na.rm = TRUE) + scale_y_continuous(limits = quantile(listings$revenue_30, c(0, 0.9), na.rm = TRUE)) + ggtitle("Distrib of estimated revenue for the next 30 days of listings per each city & room ")
+```
+
+
+## Analysis 2: Deep Dive in one City Analysis
+
+For each city, you can perform a finer grained analysis to answer the following questions:
+
+
+#### • What is the proportion of each room type?
+
+```{r, echo=FALSE}
+listings %>%
+  group_by(city) %>%
+    count(room_type)
+```
+
+```{r, echo=FALSE}
+ggplot(data=listings,aes(x = city, fill = room_type)) +geom_bar(position = position_dodge())
+```
+
+
+#### • What is the proportion of each house size (# of bedroom)?
+
+```{r, echo=FALSE}
+listings %>%
+  group_by(city) %>%
+    count(bedrooms)
+```
+
+```{r, echo=FALSE}
+ggplot(data=listings,aes(x =city , fill = bedrooms)) +
+  geom_bar(position = position_dodge())
+```
+
+
+#### • What is the proportion of each neighborhood ?
+
+```{r, echo=FALSE}
+listings %>%
+  group_by(city) %>%
+    count(neighbourhood_cleansed)
+```
+
+```{r, echo=FALSE}
+ggplot(data=listings,aes(x =neighbourhood_cleansed ,fill=city )) +
+  geom_bar(position = position_dodge()) +
+    coord_flip()
+```
+
+
+#### • What is the average availability over the next 30 days for each room type / house size / neighborhood?
+
+Room type
+```{r, echo=FALSE}
+listings %>%
+  group_by(city,room_type) %>%
+    summarize(avg_30d_availability=mean(availability_30))
+```
+
+```{r, echo=FALSE}
+ggplot(data=listings) +
+  geom_bar(aes(x=city, y=availability_30, fill=room_type),
+  position = "dodge", stat = "summary", fun = "mean")
+```
+
+
+House size
+```{r, echo=FALSE}
+listings %>%
+  group_by(city,bedrooms) %>%
+    summarize(avg_30d_availability=mean(availability_30))
+```
+
+```{r, echo=FALSE}
+ggplot(data=listings) + 
+  geom_bar(aes(x=city, y=availability_30, fill=bedrooms), 
+  position = "dodge", stat = "summary", fun = "mean")
+```
+
+
+Neighbourhood
+```{r, echo=FALSE}
+ggplot(data=listings) +
+  geom_bar(aes(x=neighbourhood_cleansed, y=availability_30, fill=city),
+  position = "dodge", stat = "summary", fun = "mean") +
+  coord_flip()
+```
+
+
+#### • What is the average revenue over the next 30 days for each room type / house size / neighborhood?
+
+Room type
+```{r, echo=FALSE}
+listings %>%
+  group_by(city,room_type) %>%
+    summarize(avg_30d_revenue=mean(revenue_30))
+```
+
+```{r, echo=FALSE}
+ggplot(data=listings) + 
+  geom_bar(aes(x=city, y=revenue_30, fill=room_type), 
+  position = "dodge", stat = "summary", fun = "mean")
+```
+
+
+House size
+```{r, echo=FALSE}
+listings %>%
+  group_by(city,bedrooms) %>%
+    summarize(avg_30d_revenue=mean(revenue_30))
+```
+
+```{r, echo=FALSE}
+ggplot(data=listings) + 
+  geom_bar(aes(x=city, y=revenue_30, fill=bedrooms), 
+  position = "dodge", stat = "summary", fun = "mean")
+```
+
+
+Neighbourhood
+```{r, echo=FALSE}
+listings %>%
+  group_by(city,neighbourhood_cleansed) %>%
+    summarize(avg_30d_revenue_30=mean(revenue_30))
+```
+
+```{r, echo=FALSE}
+ggplot(data=listings) +
+  geom_bar(aes(x=neighbourhood_cleansed, y=revenue_30, fill=city),
+  position = "dodge", stat = "summary", fun = "mean") +
+  coord_flip()
+```
+
+
+#### • What is the distribution of availability over the next 30 days for each room type / house size / neighborhood?
+
+Room type
+
+```{r, echo=FALSE}
+listings %>%
+  group_by(city,room_type) %>%
+    count(availability_30)
+```
+
+```{r, echo=FALSE}
+g <- ggplot(listings %>% filter(!is.na(room_type)), aes(city, availability_30))
+g + geom_boxplot(aes(colour = room_type), na.rm = TRUE) + scale_y_continuous(limits = quantile(listings$availability_30, c(0, 0.9), na.rm = TRUE))
+```
+
+House size
+
+```{r, echo=FALSE}
+listings %>%
+  group_by(city,bedrooms) %>%
+    count(availability_30)
+```
+
+```{r, echo=FALSE}
+g <- ggplot(listings %>% filter(!is.na(bedrooms)), aes(city, availability_30))
+g + geom_boxplot(aes(colour = bedrooms), na.rm = TRUE) + scale_y_continuous(limits = quantile(listings$availability_30, c(0, 0.9), na.rm = TRUE))
+```
+
+Neighbourhood (In this case, a graphical representation would be unreadable due to the very large number of neighborhoods.)
+
+```{r, echo=FALSE}
+listings %>%
+  group_by(city,neighbourhood_cleansed) %>%
+    count(availability_30)
+```
+
+
+#### • What is the distribution of revenue over the next 30 days for each room type / house size / neighborhood? 
+
+Room type
+
+```{r, echo=FALSE}
+listings %>%
+  group_by(city,room_type) %>%
+    count(revenue_30)
+```
+
+```{r, echo=FALSE}
+g <- ggplot(listings %>% filter(!is.na(room_type)), aes(city, revenue_30))
+g + geom_boxplot(aes(colour = room_type), na.rm = TRUE) + scale_y_continuous(limits = quantile(listings$revenue_30, c(0, 0.9), na.rm = TRUE))
+```
+
+House size
+
+```{r, echo=FALSE}
+listings %>%
+  group_by(city,bedrooms) %>%
+    count(revenue_30)
+```
+
+```{r, echo=FALSE}
+g <- ggplot(listings %>% filter(!is.na(bedrooms)), aes(city, revenue_30))
+g + geom_boxplot(aes(colour = bedrooms), na.rm = TRUE) + scale_y_continuous(limits = quantile(listings$revenue_30, c(0, 0.9), na.rm = TRUE))
+```
+
+Neighbourhood (In this case, a graphical representation would be unreadable due to the very large number of neighborhoods.)
+
+```{r, echo=FALSE}
+listings %>%
+  group_by(city,neighbourhood_cleansed) %>%
+    count(revenue_30)
+```

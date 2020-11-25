@@ -1,0 +1,12 @@
+name: APP_Shiny
+title: APP_Shiny
+username:
+account: projectappshinyrcal
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3301880
+bundleId: 3906696
+url: https://projectappshinyrcal.shinyapps.io/APP_Shiny/
+when: 1606344401.97524
+asMultiple: FALSE
+asStatic: FALSE
